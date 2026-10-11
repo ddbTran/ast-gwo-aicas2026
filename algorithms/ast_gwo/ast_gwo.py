@@ -387,8 +387,8 @@ def parse_args(argv=None) -> argparse.Namespace:
 
     # Algorithm hyper-parameters
     p.add_argument("--seed",  type=int,   default=42)
-    p.add_argument("--k_min", type=float, default=6.0)
-    p.add_argument("--k_max", type=float, default=14.0)
+    p.add_argument("--k_min", type=float, default=5.0)
+    p.add_argument("--k_max", type=float, default=15.0)
 
     # Parallelism
     p.add_argument(

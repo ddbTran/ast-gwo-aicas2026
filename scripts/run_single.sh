@@ -19,8 +19,8 @@ DIM=80
 ITERS=200
 LUT_K=6
 SEED=42
-K_MIN=6.0
-K_MAX=14.0
+K_MIN=5.0
+K_MAX=15.0
 WORKERS=""          # empty = let Python decide
 ABC_BIN="yosys-abc"
 BENCHMARKS_DIR="./benchmarks/epfl/arithmetic"

@@ -34,8 +34,8 @@ class GWOConfig:
     # ----------------------------------------------------------
     lut_k: int = 6
     seed: int = 42
-    k_min: float = 6.0
-    k_max: float = 14.0
+    k_min: float = 5.0
+    k_max: float = 15.0
     n_workers: Optional[int] = None
     abc_bin: str = "yosys-abc"
     benchmarks_dir: str = "./benchmarks/epfl/arithmetic"

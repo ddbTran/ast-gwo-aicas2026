@@ -28,8 +28,8 @@ POP=50
 DIM=80
 ITERS=50
 LUT_K=6
-K_MIN=18.0
-K_MAX=18.0
+K_MIN=5.0
+K_MAX=15.0
 WORKERS=""            # ABC-level workers per job (empty = auto)
 ABC_BIN="yosys-abc"
 BENCHMARKS_DIR="./benchmarks/epfl/arithmetic"

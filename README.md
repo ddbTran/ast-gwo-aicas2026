@@ -2,79 +2,60 @@
 
 This repository contains the artifact for our AST-GWO paper presented at IEEE AICAS 2026.
 
+## Citation
+
+If you use this code, please cite the accompanying IEEE AICAS 2026 paper.
+
 ## Repository layout
 
 ```text
-ast-gwo-aicas2026/
-├── README.md
-├── algorithms/
-│   └── ast_gwo/
-│       ├── __init__.py
-│       ├── ast_gwo.py      # Leaders, AstGWO, logging, CLI (main)
-│       ├── config.py       # GWOConfig dataclass
-│       ├── evaluator.py    # Evaluator, LRU cache, multiprocessing
-│       ├── utils.py        # bit<->script codec, ABC invocation, fitness
-│       └── test/
-│           └── test_utils.py
-├── benchmarks/
-│   └── epfl/                # place EPFL arithmetic/random_control .blif here
-├── scripts/
-│   ├── run_single.sh        # one (design, seed) run
-│   └── run_sweep.sh         # grid sweep over designs × seeds
-└── requirements.txt
+algorithms/ast_gwo/   # Optimizer, configuration, ABC evaluation, and CLI
+benchmarks/epfl/     # EPFL benchmarks (Git submodule)
+scripts/
+  run_single.sh     # Run one design and seed
+  run_sweep.sh      # Sweep designs and seeds
+  visualizer.py     # Plot convergence and population diversity
+requirements.txt   # Python dependencies
+results/           # Generated logs (ignored by Git)
 ```
 
-## Requirements
+## Usage
 
-- Python 3.9+
-- [`yosys-abc`](https://github.com/YosysHQ/yosys) (or any ABC build) on your
-  `PATH`, or pass `--abc /path/to/abc`
-- EPFL benchmark suite `.blif` files under `benchmarks/epfl/...`
+Requires Python 3.11+, Git, Bash, and `yosys-abc` on `PATH`.
+Run commands from the repository root:
 
 ```bash
-pip install -r requirements.txt
-```
+python3.11 -m venv venv
+source venv/bin/activate
+python -m pip install -r requirements.txt
+git submodule update --init --recursive
 
-## Quick start
-
-Single run:
-
-```bash
+# Single run (200 iterations, seed 42)
 bash scripts/run_single.sh --design adder
+
+# Custom run
 bash scripts/run_single.sh --design bar --pop 50 --dim 80 --iters 50 --seed 0
-```
 
-Equivalent direct invocation:
-
-```bash
-python -m algorithms.ast_gwo.ast_gwo --design adder --pop 50 --dim 80 --iters 200
-```
-
-Sweep over multiple designs and seeds:
-
-```bash
-# default sweep (all designs, seeds 0-4)
+# Default sweep (adder, seeds 0–4, 50 iterations)
 bash scripts/run_sweep.sh
 
-# custom designs/seeds, 4 parallel jobs
+# Custom sweep
 bash scripts/run_sweep.sh --designs "adder bar hyp" --seeds "0 1 2" --jobs 4
 
-# dry run — print the commands without executing
+# Preview sweep commands (requires ABC and benchmarks)
 bash scripts/run_sweep.sh --dry-run
+
+# Generate the dataset expected by the visualizer, then plot
+bash scripts/run_sweep.sh --designs "adder multiplier"
+python scripts/visualizer.py
 ```
 
-Results (per-iteration and per-individual CSV logs, plus a run log) are
-written under `results/ast_gwo/<run_tag>/<design>/<seed>/`.
+Both run scripts default to slope range 5–15; override with `--k_min` and
+`--k_max`. Use `--abc /path/to/abc` for another ABC executable,
+`--workers N` for evaluation processes per run, and `--results_dir PATH`
+for a custom output directory. For random/control designs, pass
+`--benchmarks_dir benchmarks/epfl/random_control`.
 
-## Tests
-
-```bash
-pytest algorithms/ast_gwo/test/
-```
-
-The ABC-dependent test is skipped automatically if `yosys-abc` or the
-benchmark files aren't available.
-
-## Citation
-
-If you use this code, please cite the accompanying AICAS 2026 paper.
+Single-run logs default to `results/ast_gwo`; sweep logs default to
+`results/runs/ast_gwo/conference`. Each run contains `iter.log`, `pop.log`,
+and `run.log` under `<results_dir>/<run_tag>/<design>/<seed>/`.
